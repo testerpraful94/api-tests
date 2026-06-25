@@ -119,6 +119,22 @@
 		},
 		{
 			"name": "Get Single Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "94bdeb8e-1ea0-4cc9-81c1-8fda253a6540",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
 			"id": "b05657de-b5f3-473e-bf93-8259c6071fd1",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
