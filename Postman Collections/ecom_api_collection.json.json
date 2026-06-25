@@ -1,0 +1,217 @@
+{
+	"info": {
+		"_postman_id": "669531b7-859b-41f0-8703-0e06bf7c5f9d",
+		"name": "ECOM Api Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "12616e50-9348-499e-972b-c8c13aa8adba",
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"pm.test(\"Status code is 200\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.environment.set(\"token\",jsonData.accessToken);\r",
+							"console.log(pm.environment.get(\"token\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"id": "f2316c0b-2cd2-4683-be8b-44e46c28cf07",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"emilys\",\r\n    \"password\": \"emilyspass\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Profile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d30e7b2c-e111-4e15-94df-22d8c05ab2ce",
+						"exec": [
+							"pm.test(\"Profile fetched\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"id": "f9aaa12d-62d2-40cb-8aa4-81128550fd69",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "{{base_url}}/auth/me"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bc01d673-facd-4993-8cb7-f29634476700",
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"pm.test(\"Products fetched\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.environment.set(\"product_id\", jsonData.products[0].id)\r",
+							"\r",
+							"\r",
+							"pm.expect(\"Products exist\", function () {\r",
+							"    pm.test(jsonData.products.length).to.be.above(0);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"id": "c0290cb3-0c20-490a-a13d-f8b865e85aeb",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{base_url}}/products"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Product",
+			"id": "b05657de-b5f3-473e-bf93-8259c6071fd1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{base_url}}/products/{{product_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Add to Cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4a321109-0972-4908-8363-ec8d95b82642",
+						"exec": [
+							"pm.test(\"Status code is 201\", function(){\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"let jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Cart Id is not null\",function(){\r",
+							"    pm.expect(jsonData.products.length).to.be.above(0)\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"cart_id\",jsonData.id)\r",
+							"\r",
+							"console.log(\"Cart is created successfully\");"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"id": "36db0db1-1ccb-4f52-a40d-55aeed3d10b2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 1,\r\n    \"products\": [\r\n        {\r\n            \"id\": {{product_id}},\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/carts/add"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Cart Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0c66976e-53ec-4331-8651-dda2b6596bc1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"let jsonData = pm.response.json();\r",
+							"pm.test(\"Card total is valid\",function(){\r",
+							"pm.expect(jsonData.total).to.be.above(0)\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"id": "1ae35134-da6c-44e8-95ba-6583d0d3b6a5",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{base_url}}/carts/21"
+			},
+			"response": []
+		}
+	]
+}
